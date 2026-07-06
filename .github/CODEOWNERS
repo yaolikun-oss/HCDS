@@ -1,0 +1,12 @@
+# Default repository owners. Replace with the maintainers or teams responsible for HCDS.
+* @hcds-maintainers
+
+# Documentation
+/docs/ @hcds-maintainers
+/rfcs/ @hcds-maintainers
+
+# Schemas, generators, validators, and tests
+/schemas/ @hcds-maintainers
+/generators/ @hcds-maintainers
+/validators/ @hcds-maintainers
+/tests/ @hcds-maintainers

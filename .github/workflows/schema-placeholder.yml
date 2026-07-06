@@ -1,0 +1,18 @@
+name: Schema Validation Placeholder
+
+on:
+  pull_request:
+    paths:
+      - "schemas/**"
+      - ".github/workflows/schema-placeholder.yml"
+  workflow_dispatch:
+
+jobs:
+  schema-placeholder:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reserved for future HCDS schema validation
+        run: |
+          echo "Schema validation is intentionally not implemented yet."
+          echo "This workflow reserves the CI surface for the future validation engine."

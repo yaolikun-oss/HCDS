@@ -1,0 +1,35 @@
+# macOS metadata
+.DS_Store
+._*
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Node and static site tooling
+node_modules/
+.cache/
+.parcel-cache/
+
+# Build and generated outputs
+dist/
+build/
+site/
+.site/
+outputs/
+
+# Local environments
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+*~

@@ -1,0 +1,7 @@
+title: HCDS Documentation
+description: History Character Dataset Standard documentation
+markdown: kramdown
+theme: minima
+plugins: []
+exclude:
+  - "**/._*"

@@ -1,0 +1,16 @@
+name: Markdown Validation
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  markdown:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Markdown lint placeholder
+        run: |
+          echo "Markdown validation workflow is ready."
+          echo "Add markdownlint-cli2 or a project-specific validator when dependencies are selected."

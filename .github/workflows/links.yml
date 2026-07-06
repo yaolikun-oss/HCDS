@@ -1,0 +1,15 @@
+name: Broken Link Check
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Link check placeholder
+        run: |
+          echo "Broken link checking workflow is ready."
+          echo "Add lychee or another approved link checker when dependency policy is selected."

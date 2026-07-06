@@ -1,0 +1,18 @@
+name: Directory Validation
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  directories:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate repository directories
+        run: |
+          required_dirs="            docs/00_governance             docs/01_architecture             docs/02_schema             docs/03_generation             docs/04_pipeline             docs/05_reference             schemas/json             schemas/yaml             schemas/examples             examples             datasets/examples             generators             validators             templates             tests             tools             rfcs             .github/ISSUE_TEMPLATE             .github/workflows"
+          for dir in $required_dirs; do
+            test -d "$dir" || { echo "Missing required directory: $dir"; exit 1; }
+          done
