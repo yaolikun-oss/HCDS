@@ -106,6 +106,19 @@ class PromptRecord:
     prompt: str
 
 
+@dataclass(frozen=True)
+class SkippedRecord:
+    row_number: int
+    record_id: str
+    reason: str
+
+
+@dataclass(frozen=True)
+class BatchResult:
+    prompts: list[PromptRecord]
+    skipped: list[SkippedRecord]
+
+
 def clean(value: object) -> str:
     if value is None:
         return ""
@@ -174,10 +187,14 @@ def prefixed(label: str, values: Iterable[str]) -> str:
     return f"{label}: {joined}" if joined else ""
 
 
+def record_identifier(row: dict[str, object], fallback: str = "record") -> str:
+    return canonical(row, "record_id") or canonical(row, "name") or fallback
+
+
 def compile_prompt(row: dict[str, object]) -> PromptRecord:
     validate_observable(row)
 
-    record_id = canonical(row, "record_id") or canonical(row, "name") or "record"
+    record_id = record_identifier(row)
 
     identity = join_values([
         canonical(row, "name"),
@@ -237,6 +254,24 @@ def compile_prompt(row: dict[str, object]) -> PromptRecord:
     return PromptRecord(record_id=record_id, prompt=prompt)
 
 
+def compile_batch(rows: list[dict[str, object]]) -> BatchResult:
+    prompts: list[PromptRecord] = []
+    skipped: list[SkippedRecord] = []
+    for index, row in enumerate(rows, start=1):
+        fallback = f"row-{index}"
+        record_id = record_identifier(row, fallback=fallback)
+        try:
+            record = compile_prompt(row)
+        except Exception as exc:
+            skipped.append(SkippedRecord(index, record_id, str(exc)))
+            continue
+        if record.prompt:
+            prompts.append(record)
+        else:
+            skipped.append(SkippedRecord(index, record.record_id, "No prompt content could be generated"))
+    return BatchResult(prompts=prompts, skipped=skipped)
+
+
 def read_csv_like(path: Path, delimiter: str) -> list[dict[str, object]]:
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
         reader = csv.DictReader(handle, delimiter=delimiter)
@@ -291,13 +326,29 @@ def read_dataset(path: Path, sheet_name: str | None = None) -> list[dict[str, ob
     raise ValueError(f"Unsupported input format: {path.suffix}")
 
 
-def write_prompts(records: list[PromptRecord], output: Path) -> None:
+def write_prompts(
+    records: list[PromptRecord],
+    output: Path,
+    skipped: list[SkippedRecord] | None = None,
+) -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
     lines: list[str] = []
     for record in records:
         lines.append(f"## {record.record_id}")
         lines.append(record.prompt)
         lines.append("")
+
+    lines.append("## Error Report")
+    if skipped:
+        lines.append("Skipped records:")
+        for skipped_record in skipped:
+            lines.append(
+                f"- row {skipped_record.row_number}, {skipped_record.record_id}: "
+                f"{skipped_record.reason}"
+            )
+    else:
+        lines.append("Skipped records: none")
+
     output.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
 
 
@@ -314,15 +365,15 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         rows = read_dataset(args.input, sheet_name=args.sheet)
-        prompts = [compile_prompt(row) for row in rows]
-        prompts = [record for record in prompts if record.prompt]
-        if not prompts:
-            raise ValueError("No prompt content could be generated from the dataset")
-        write_prompts(prompts, args.output)
+        result = compile_batch(rows)
+        write_prompts(result.prompts, args.output, skipped=result.skipped)
+        if not result.prompts:
+            raise ValueError("No valid prompt content could be generated from the dataset")
     except Exception as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1
-    print(f"generated {len(prompts)} prompt(s): {args.output}")
+    skipped_count = len(result.skipped) if 'result' in locals() else 0
+    print(f"generated {len(result.prompts)} prompt(s), skipped {skipped_count} record(s): {args.output}")
     return 0
 
 
