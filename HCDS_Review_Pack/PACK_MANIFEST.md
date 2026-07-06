@@ -16,7 +16,7 @@
 - `HCDS_Review_Pack/dataset/Prompt_Template.xlsx`
 - `HCDS_Review_Pack/dataset/README.md`
 - `HCDS_Review_Pack/dataset/Rule_Engine.xlsx`
-- `HCDS_Review_Pack/dataset/examples/dataset_master_mvp.csv`
+- `HCDS_Review_Pack/dataset/examples/HCDS_Master_MVP.csv`
 - `HCDS_Review_Pack/decisions_snapshot.md`
 - `HCDS_Review_Pack/entities/Appearance_Spec.md`
 - `HCDS_Review_Pack/entities/Character_Identity_Spec.md`

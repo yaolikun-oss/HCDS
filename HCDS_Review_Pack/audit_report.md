@@ -28,7 +28,7 @@ Byte-for-byte diff of every review-pack document against its source file showed 
 | `schemas/HCDS_Master_Schema.md` | `HCDS_Review_Pack/dataset/HCDS_Master_Schema.md` | MATCH |
 | `ai_agents/status.md` | `HCDS_Review_Pack/ai_agents/status.md` | MATCH |
 | `ai_agents/decisions.md` | `HCDS_Review_Pack/ai_agents/decisions.md` | MATCH |
-| `datasets/examples/dataset_master_mvp.csv` | `HCDS_Review_Pack/dataset/examples/dataset_master_mvp.csv` | MATCH |
+| `datasets/examples/HCDS_Master_MVP.csv` | `HCDS_Review_Pack/dataset/examples/HCDS_Master_MVP.csv` | MATCH |
 
 The pack's own self-reported gaps (`PACK_MANIFEST.md` missing-source fallback, `status_snapshot.md` known risks) were independently reproduced against the real directory tree and are accurate.
 
@@ -80,7 +80,7 @@ Three different names are in use for the "single source of truth" workbook:
 ## 3. Verified Working
 
 - `python3 -m unittest discover -s tests` → **2/2 tests pass.**
-- End-to-end run: `datasets/examples/dataset_master_mvp.csv` → `prompt_generator.py` → `outputs/prompt_mvp.txt` produces deterministic, Observable-Principle-compliant output (no interpretive adjectives; matches [Decision-015](../ai_agents/decisions.md)).
+- End-to-end run: `datasets/examples/HCDS_Master_MVP.csv` → `prompt_generator.py` → `outputs/prompt_mvp.txt` produces deterministic, Observable-Principle-compliant output (no interpretive adjectives; matches [Decision-015](../ai_agents/decisions.md)).
 - Entity spec structure (Purpose/Responsibilities/Fields/Constraints/Relationships/Validation/Examples/Compliance) is consistently applied across all five frozen entity specs, per [Decision-013](../ai_agents/decisions.md).
 
 ---

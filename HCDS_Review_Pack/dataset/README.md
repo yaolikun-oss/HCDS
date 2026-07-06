@@ -11,4 +11,4 @@ The current repository contains dataset placeholder workbooks under `datasets/`.
 - Emotion_Mapping.xlsx
 - Prompt_Template.xlsx
 
-A minimal CSV example exists at `examples/dataset_master_mvp.csv` and is used by the Prompt Generator MVP.
+A minimal CSV example exists at `examples/HCDS_Master_MVP.csv` and is used by the Prompt Generator MVP.

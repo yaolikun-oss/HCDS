@@ -8,7 +8,7 @@ Generate prompt text from a logical dataset table:
 
 ```bash
 python3 generators/prompt_generator.py \
-  --input datasets/examples/dataset_master_mvp.csv \
+  --input datasets/examples/HCDS_Master_MVP.csv \
   --output outputs/prompt_mvp.txt
 ```
 

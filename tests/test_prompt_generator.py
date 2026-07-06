@@ -1,4 +1,3 @@
-import csv
 import importlib.util
 import sys
 import tempfile
@@ -7,6 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MODULE_PATH = ROOT / "generators" / "prompt_generator.py"
+EXAMPLE_DATASET = ROOT / "datasets" / "examples" / "HCDS_Master_MVP.csv"
 spec = importlib.util.spec_from_file_location("prompt_generator", MODULE_PATH)
 prompt_generator = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = prompt_generator
@@ -35,20 +35,23 @@ class PromptGeneratorTests(unittest.TestCase):
         self.assertIn("pose: Standing, Holding Saber", record.prompt)
         self.assertIn("expression: Open, Closed", record.prompt)
 
-    def test_cli_generates_prompt_file_from_csv(self):
+    def test_dataset_to_prompt_to_output_file(self):
         with tempfile.TemporaryDirectory() as tmp:
-            input_path = Path(tmp) / "dataset.csv"
             output_path = Path(tmp) / "Prompt.txt"
-            with input_path.open("w", encoding="utf-8", newline="") as handle:
-                writer = csv.DictWriter(handle, fieldnames=["CharacterId", "CanonicalName", "BodyPose"])
-                writer.writeheader()
-                writer.writerow({"CharacterId": "CHAR-2", "CanonicalName": "Test Character", "BodyPose": "Standing"})
-            exit_code = prompt_generator.main(["--input", str(input_path), "--output", str(output_path)])
+            exit_code = prompt_generator.main([
+                "--input",
+                str(EXAMPLE_DATASET),
+                "--output",
+                str(output_path),
+            ])
             self.assertEqual(exit_code, 0)
+            self.assertTrue(output_path.exists())
             text = output_path.read_text(encoding="utf-8")
-            self.assertIn("## CHAR-2", text)
-            self.assertIn("Test Character", text)
+            self.assertIn("## CHAR-0001", text)
+            self.assertIn("Yelu Abaoji", text)
+            self.assertIn("costume: Khitan Noble", text)
             self.assertIn("pose: Standing", text)
+            self.assertIn("expression: Open", text)
 
 
 if __name__ == "__main__":
