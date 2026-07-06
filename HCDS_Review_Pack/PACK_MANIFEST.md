@@ -9,13 +9,10 @@
 - `HCDS_Review_Pack/architecture/Data_Flow_Architecture.md`
 - `HCDS_Review_Pack/architecture/System_Architecture.md`
 - `HCDS_Review_Pack/dataset/Attribute_Library.xlsx`
-- `HCDS_Review_Pack/dataset/Character_Profile.xlsx`
-- `HCDS_Review_Pack/dataset/Emotion_Mapping.xlsx`
 - `HCDS_Review_Pack/dataset/HCDS_Master.xlsx`
 - `HCDS_Review_Pack/dataset/HCDS_Master_Schema.md`
 - `HCDS_Review_Pack/dataset/Prompt_Template.xlsx`
 - `HCDS_Review_Pack/dataset/README.md`
-- `HCDS_Review_Pack/dataset/Rule_Engine.xlsx`
 - `HCDS_Review_Pack/dataset/examples/HCDS_Master_MVP.csv`
 - `HCDS_Review_Pack/decisions_snapshot.md`
 - `HCDS_Review_Pack/entities/Appearance_Spec.md`
@@ -33,6 +30,8 @@
 
 - `docs/01_architecture/System_Architecture.md (using fallback: docs/02_architecture/System_Architecture.md)`
 
-## Pack Cleanup
+## Stabilization v1.2 Cleanup
 
-- Removed AppleDouble files from review pack: 33
+- Removed non-implemented workbook placeholders outside the active MVP path.
+- Aligned `HCDS_Master_Schema.md` with `FIELD_ALIASES` in `generators/prompt_generator.py`.
+- Kept frozen architecture and specification documents unchanged.

@@ -1,10 +1,10 @@
 # HCDS Status Snapshot
 
-Snapshot Date: 2026-07-05
+Snapshot Date: 2026-07-06
 
 ## Current Phase
 
-Implementation MVP: HCDS Generator
+Stabilization v1.2: Schema and Generator Alignment
 
 ## Completed Components
 
@@ -12,36 +12,28 @@ Implementation MVP: HCDS Generator
 - Repository Infrastructure: Complete
 - Agent Collaboration Architecture v1.0: Frozen
 - Documentation Infrastructure: Complete
-- `docs/02_schema/HCDS_Schema.md`: Frozen
-- `docs/02_schema/Field_Model_Spec.md`: Frozen
-- `docs/02_schema/Controlled_Vocabulary_Spec.md`: Frozen
-- `docs/02_schema/Dataset_Master_Spec.md`: Frozen
-- `docs/02_schema/Character_Identity_Spec.md`: Frozen
-- `docs/02_schema/Appearance_Spec.md`: Frozen
-- `docs/02_schema/Costume_Spec.md`: Frozen
-- `docs/02_schema/Pose_Action_Spec.md`: Frozen
-- `docs/02_schema/Expression_Spec.md`: Frozen
+- Core schema specifications: Frozen
+- Core entity specifications: Frozen
 - Data Foundation MVP: Complete
-- HCDS Prompt Generator MVP: Complete
+- Prompt Generator MVP: Complete
+- Dataset naming alignment: Complete
+- `openpyxl` dependency declaration: Complete
+- `schemas/HCDS_Master_Schema.md` alignment with `FIELD_ALIASES`: Complete
+- Observable Principle enforcement in `generators/prompt_generator.py`: Complete
 
 ## Missing Components
 
-- Real `datasets/HCDS_Master.xlsx` content. Current workbook placeholders are 0-byte files.
-- `docs/03_generation/Prompt_Generation_Spec.md` is not yet written.
-- `docs/03_generation/Image_Filename_Spec.md` is not yet written.
-- `docs/03_generation/Caption_Generation_Spec.md` is not yet written.
-- `docs/03_generation/OneTrainer_Dataset_Spec.md` is not yet written.
-- `docs/02_schema/Camera_Spec.md`, `Scene_Context_Spec.md`, and `Metadata_Spec.md` are deferred.
-- GitHub remote is not configured in the local repository.
+- Real `datasets/HCDS_Master.xlsx` content. Current workbook placeholder is 0-byte.
+- Full production Prompt Generation specification is not yet written.
+- Image filename, caption, and OneTrainer specifications are not yet written.
+- Camera, Scene, and Metadata specs are deferred.
 
 ## Known Risks
 
-- Dataset `.xlsx` files are placeholders, so external reviewers cannot validate real Excel ingestion yet.
-- `System_Architecture.md` exists under `docs/02_architecture/`, while the review pack request referenced `docs/01_architecture/System_Architecture.md`.
-- macOS AppleDouble `._*` files exist in the working tree; they are ignored by `.gitignore` but remain on disk.
-- Generator MVP currently compiles a minimal dataset to prompt text; it is not a full production pipeline.
-- Several implementation specs remain unwritten, including prompt generation, captions, filenames, and OneTrainer output.
+- The `.xlsx` MVP path depends on a future real workbook fixture.
+- The Observable Principle is enforced by a conservative prohibited-term list, not a full semantic validator.
+- The current generator is a Prompt MVP, not a full image or training-data pipeline.
 
 ## Next Step Recommendation
 
-Replace placeholder dataset workbooks with real `HCDS_Master.xlsx` data, then run the existing Prompt Generator MVP against the real workbook to validate `Dataset -> Prompt.txt`.
+Populate a real `datasets/HCDS_Master.xlsx` workbook using the MVP schema, then run the existing Prompt Generator MVP against both CSV and XLSX inputs.

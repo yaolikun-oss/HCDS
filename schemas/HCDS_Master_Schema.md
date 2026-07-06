@@ -1,483 +1,211 @@
 # HCDS Master Schema
 
-Version: v2.0 RC1
-Status: Frozen Draft
-Owner: User
-Architect: ChatGPT
-Consumers: Claude Code, Codex, Python, ComfyUI, OneTrainer
+Version: v2.0 MVP
+Status: Implementation Aligned
+Owner: HCDS Engineering
 
 ---
 
-## 1. Core Rule
+# 1. Purpose
 
-HCDS is schema-driven.
+This file defines the current implemented HCDS Master dataset schema used by the Prompt Generator MVP.
 
-Excel is only one implementation.
+It is an implementation-facing schema alignment document. It reconciles the logical HCDS specifications with the fields currently consumed by `generators/prompt_generator.py`.
 
-All generators must follow this schema.
-
-Do not hardcode prompts, captions, filenames, or metadata.
+This file does not introduce new architecture.
 
 ---
 
-## 2. Master Workbook
+# 2. MVP Dataset Shape
 
-Default implementation:
+The current MVP uses one flat logical dataset table.
 
-```text
-datasets/HCDS_Master.xlsx
-```
-
-The workbook contains four layers:
+Canonical dataset path:
 
 ```text
-Character Layer
-Attribute Layer
-Rule Layer
-Generator Layer
+datasets/examples/HCDS_Master_MVP.csv
 ```
+
+The same field model MAY be represented as `.xlsx`, `.csv`, or `.tsv` when consumed by the Prompt Generator MVP.
+
+The active MVP dataset shape is:
+
+```text
+HCDS_Master
+        ↓
+Dataset row
+        ↓
+Prompt record
+```
+
+# 3. Canonical MVP Fields
+
+The MVP dataset fields are aligned with `FIELD_ALIASES` in `generators/prompt_generator.py`.
+
+## 3.1 Identity Fields
+
+| Canonical Field | Accepted Aliases | Prompt Role |
+| --- | --- | --- |
+| CharacterId | RecordId, ID, Id | Prompt record identifier |
+| CanonicalName | CharacterName, Name | Identity prompt fragment |
+| Dynasty | - | Identity prompt fragment |
+| HistoricalRole | OfficialTitle, Role | Identity prompt fragment |
+
+## 3.2 Appearance Fields
+
+| Canonical Field | Accepted Aliases |
+| --- | --- |
+| BiologicalSex | Sex |
+| EstimatedAge | AgeGroup, Age |
+| FaceShape | - |
+| EyeShape | - |
+| EyeColor | - |
+| EyebrowShape | - |
+| NoseShape | - |
+| MouthShape | - |
+| HairStyle | - |
+| HairLength | - |
+| HairColor | - |
+| BeardStyle | - |
+| MustacheStyle | - |
+| BodyBuild | - |
+| HeightCategory | - |
+| SkinTone | - |
+
+## 3.3 Costume Fields
+
+| Canonical Field | Accepted Aliases |
+| --- | --- |
+| CostumeStyle | - |
+| Headwear | - |
+| UpperGarment | - |
+| LowerGarment | - |
+| Footwear | - |
+| Belt | - |
+| Accessories | - |
+| Armor | - |
+| PrimaryWeapon | - |
+| SecondaryWeapon | - |
+
+## 3.4 Pose Fields
+
+| Canonical Field | Accepted Aliases |
+| --- | --- |
+| BodyPose | - |
+| HeadDirection | - |
+| LeftArm | - |
+| RightArm | - |
+| LeftHand | - |
+| RightHand | - |
+| LeftLeg | - |
+| RightLeg | - |
+| InteractionObject | - |
+
+## 3.5 Expression Fields
+
+| Canonical Field | Accepted Aliases |
+| --- | --- |
+| EyeState | - |
+| EyeDirection | - |
+| EyebrowState | - |
+| MouthState | - |
+| FacialTension | - |
 
 ---
 
-## 3. Required Sheets
+# 4. Dataset to Prompt Mapping
 
-### 3.1 Config
+The Prompt Generator MVP compiles each dataset row into one prompt record.
 
-Global project configuration.
+| Prompt Section | Source Fields |
+| --- | --- |
+| Record Header | CharacterId or fallback CanonicalName |
+| Identity | CanonicalName, Dynasty, HistoricalRole |
+| appearance | BiologicalSex, EstimatedAge, FaceShape, EyeShape, EyeColor, EyebrowShape, NoseShape, MouthShape, HairStyle, HairLength, HairColor, BeardStyle, MustacheStyle, BodyBuild, HeightCategory, SkinTone |
+| costume | CostumeStyle, Headwear, UpperGarment, LowerGarment, Footwear, Belt, Accessories, Armor, PrimaryWeapon, SecondaryWeapon |
+| pose | BodyPose, HeadDirection, LeftArm, RightArm, LeftHand, RightHand, LeftLeg, RightLeg, InteractionObject |
+| expression | EyeState, EyeDirection, EyebrowState, MouthState, FacialTension |
 
-Required fields:
+Empty values and null-like values are omitted from output.
 
-```text
-Config_Key
-Config_Value
-Description
-```
-
----
-
-### 3.2 Character_Profile
-
-Stores character identity.
-
-Required fields:
-
-```text
-Character_ID
-Character_Name_CN
-Character_Name_EN
-Character_Token
-Dynasty
-Period
-Role_Type
-Gender
-Age_Range
-Body_Type
-Face_Feature
-Default_Costume_ID
-Default_Identity_Tags
-Default_Style_Tags
-Status
-Notes
-```
+Duplicate prompt fragments are deduplicated while preserving source order.
 
 ---
 
-### 3.3 Attribute_View
+# 5. Observable Principle Enforcement
 
-Stores camera/view attributes.
+The Prompt Generator MVP enforces the Observable Principle using lightweight prohibited-term validation.
 
-Required fields:
+Dataset values SHALL describe observable or historically factual data.
 
-```text
-View_ID
-View_Name_CN
-View_Name_EN
-Prompt_Tag
-Caption_Tag
-Camera_Type
-Is_Core
-Priority
-Notes
-```
+Interpretive style words are rejected before prompt output is written.
 
----
+Examples of rejected values include:
 
-### 3.4 Attribute_Pose
+* Heroic
+* Noble
+* Majestic
+* Powerful
+* Natural
+* Brave
+* Determined
+* 威严
+* 坚定
+* 霸气
 
-Stores body pose/action attributes.
-
-Required fields:
-
-```text
-Pose_ID
-Pose_Name_CN
-Pose_Name_EN
-Prompt_Tag
-Caption_Tag
-Emotion_Tags
-Allowed_Posture
-Forbidden_Posture
-Is_Core
-Priority
-Notes
-```
+This validation is intentionally conservative and does not create a separate rule engine.
 
 ---
 
-### 3.5 Attribute_Posture
+# 6. Supported Input Formats
 
-Stores body state.
+The Prompt Generator MVP supports:
 
-Required fields:
+* `.csv`
+* `.tsv`
+* `.xlsx`
 
-```text
-Posture_ID
-Posture_Name_CN
-Posture_Name_EN
-Prompt_Tag
-Caption_Tag
-Category
-Is_Core
-Priority
-Notes
-```
-
-Examples:
-
-```text
-standing
-sitting upright
-walking
-riding horse
-kneeling
-```
+Reading `.xlsx` files requires `openpyxl`, declared in `requirements.txt`.
 
 ---
 
-### 3.6 Attribute_Hand
+# 7. Current MVP Contract
 
-Stores hand action and held objects.
-
-Required fields:
+The current end-to-end MVP contract is:
 
 ```text
-Hand_ID
-Hand_Name_CN
-Hand_Name_EN
-Prompt_Tag
-Caption_Tag
-Held_Object
-Emotion_Tags
-Allowed_Posture
-Forbidden_Posture
-Is_Core
-Priority
-Notes
+datasets/examples/HCDS_Master_MVP.csv
+        ↓
+generators/prompt_generator.py
+        ↓
+outputs/prompt_mvp.txt
 ```
+
+The generator SHALL NOT require non-implemented workbook layers.
+
+The generator SHALL reject unsupported input formats.
+
+The generator SHALL reject non-observable interpretive prompt values.
 
 ---
 
-### 3.7 Attribute_Expression
+# 8. Known Deferred Items
 
-Stores facial expression.
+The following are deferred and not required for the current MVP:
 
-Required fields:
+* physical Excel workbook layout
+* full validator engine
+* prompt template engine
+* advanced validation engines
+* aggregate profile implementation
+* schema compiler
 
-```text
-Expression_ID
-Expression_Name_CN
-Expression_Name_EN
-Prompt_Tag
-Caption_Tag
-Emotion_Tags
-Is_Core
-Priority
-Notes
-```
+Deferred items MAY be implemented later only through dedicated specifications and implementation tasks.
 
 ---
 
-### 3.8 Attribute_Costume
+# 9. End of Schema
 
-Stores costume style.
+This schema is aligned to the current working Dataset -> Prompt MVP implementation.
 
-Required fields:
-
-```text
-Costume_ID
-Costume_Name_CN
-Costume_Name_EN
-Dynasty
-Role_Type
-Prompt_Tag
-Caption_Tag
-Is_Default
-Notes
-```
-
----
-
-### 3.9 Emotion_Mapping
-
-Maps observable actions to semantic emotion words.
-
-Required fields:
-
-```text
-Mapping_ID
-Source_Type
-Source_ID
-Emotion_Tag
-User_Prompt_Word_CN
-User_Prompt_Word_EN
-Weight
-Notes
-```
-
-Example:
-
-```text
-Pose_ID = P002
-Action = hands behind back
-Emotion_Tag = majestic, solemn, authoritative
-```
-
----
-
-### 3.10 Rule_Engine
-
-Defines legal and illegal combinations.
-
-Required fields:
-
-```text
-Rule_ID
-Rule_Type
-Source_Type
-Source_ID
-Target_Type
-Target_ID
-Action
-Severity
-Reason_CN
-Reason_EN
-```
-
-Allowed values for Action:
-
-```text
-ALLOW
-FORBID
-WARN
-```
-
----
-
-### 3.11 Prompt_Template
-
-Stores prompt templates.
-
-Required fields:
-
-```text
-Template_ID
-Template_Name
-Model_Target
-Positive_Template
-Negative_Template
-Background_Tag
-Camera_Tag
-Quality_Tag
-Status
-Notes
-```
-
----
-
-### 3.12 Dataset_Plan
-
-Human-maintained dataset generation plan.
-
-This is not final output.
-
-Required fields:
-
-```text
-Plan_ID
-Character_ID
-View_ID
-Pose_ID
-Posture_ID
-Hand_ID
-Expression_ID
-Costume_ID
-Template_ID
-Scene_Type
-Dataset_Use
-Priority
-Generate_Status
-QC_Status
-Notes
-```
-
----
-
-### 3.13 Dataset_Master
-
-Generated dataset index.
-
-This sheet may be generated automatically from Dataset_Plan.
-
-Required fields:
-
-```text
-Dataset_ID
-Character_ID
-File_Stem
-Image_File
-Caption_File
-Metadata_File
-Prompt_Positive
-Prompt_Negative
-Caption_Text
-Width
-Height
-Aspect_Ratio
-Model_Target
-Dataset_Use
-Train_Weight
-Generate_Status
-QC_Status
-Train_Status
-Notes
-```
-
----
-
-## 4. ID Rules
-
-### Character_ID
-
-Format:
-
-```text
-CHR_0001
-```
-
-### Dataset_ID
-
-Format:
-
-```text
-HC000001
-```
-
-### Attribute IDs
-
-```text
-V001 = View
-P001 = Pose
-S001 = Posture
-H001 = Hand
-E001 = Expression
-C001 = Costume
-T001 = Template
-R001 = Rule
-```
-
----
-
-## 5. File Naming Rule
-
-File stem must be generated from Dataset_ID.
-
-Required format:
-
-```text
-HC000001_CHR0001_V001_P002_S001_H001_E003
-```
-
-Generated files:
-
-```text
-HC000001_CHR0001_V001_P002_S001_H001_E003.png
-HC000001_CHR0001_V001_P002_S001_H001_E003.txt
-HC000001_CHR0001_V001_P002_S001_H001_E003.json
-```
-
----
-
-## 6. Caption Rule
-
-Caption must include:
-
-```text
-Character_Token
-Identity tags
-Observable action tags
-Posture tags
-Hand tags
-Expression tags
-Emotion tags
-Costume tags
-```
-
-Example:
-
-```text
-ylabj, historical Chinese emperor, standing, hands behind back, serious expression, majestic, solemn, authoritative, Liao dynasty costume
-```
-
----
-
-## 7. Generator Rule
-
-Generators must read:
-
-```text
-Character_Profile
-Attribute_* sheets
-Emotion_Mapping
-Rule_Engine
-Prompt_Template
-Dataset_Plan
-```
-
-Generators must output:
-
-```text
-Dataset_Master
-Images
-Captions
-Metadata
-ComfyUI batch files
-OneTrainer dataset
-```
-
----
-
-## 8. Forbidden Practices
-
-Do not manually maintain Prompt files.
-
-Do not manually maintain Caption files.
-
-Do not manually rename image files.
-
-Do not invent fields.
-
-Do not rename schema columns.
-
-Do not delete schema columns.
-
-Do not bypass Rule_Engine.
-
----
-
-## 9. Extension Rule
-
-New fields may be added only after RFC approval.
-
-Existing fields must remain backward compatible.
-
-Breaking changes require version update.
+End of document.

@@ -21,7 +21,7 @@ class PromptGeneratorTests(unittest.TestCase):
             "Dynasty": "Liao",
             "HistoricalRole": "Emperor",
             "FaceShape": "Oval",
-            "CostumeStyle": "Khitan Noble",
+            "CostumeStyle": "Khitan Round-Collar Robe",
             "BodyPose": "Standing",
             "RightHand": "Holding Saber",
             "EyeState": "Open",
@@ -31,9 +31,20 @@ class PromptGeneratorTests(unittest.TestCase):
         self.assertEqual(record.record_id, "CHAR-1")
         self.assertIn("Yelu Abaoji", record.prompt)
         self.assertIn("appearance: Oval", record.prompt)
-        self.assertIn("costume: Khitan Noble", record.prompt)
+        self.assertIn("costume: Khitan Round-Collar Robe", record.prompt)
         self.assertIn("pose: Standing, Holding Saber", record.prompt)
         self.assertIn("expression: Open, Closed", record.prompt)
+
+    def test_rejects_interpretive_terms(self):
+        row = {
+            "CharacterId": "CHAR-2",
+            "CanonicalName": "Example Character",
+            "BodyPose": "Heroic",
+        }
+        with self.assertRaises(ValueError) as ctx:
+            prompt_generator.compile_prompt(row)
+        self.assertIn("Observable Principle violation", str(ctx.exception))
+        self.assertIn("Heroic", str(ctx.exception))
 
     def test_dataset_to_prompt_to_output_file(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -49,7 +60,7 @@ class PromptGeneratorTests(unittest.TestCase):
             text = output_path.read_text(encoding="utf-8")
             self.assertIn("## CHAR-0001", text)
             self.assertIn("Yelu Abaoji", text)
-            self.assertIn("costume: Khitan Noble", text)
+            self.assertIn("costume: Khitan Round-Collar Robe", text)
             self.assertIn("pose: Standing", text)
             self.assertIn("expression: Open", text)
 

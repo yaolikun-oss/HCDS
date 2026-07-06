@@ -1,14 +1,23 @@
 # Dataset Review Notes
 
-State: partially implemented placeholders.
+State: MVP dataset implemented, Excel workbook placeholder pending.
 
-The current repository contains dataset placeholder workbooks under `datasets/`. As of this review pack, the following `.xlsx` files are 0-byte placeholders and are not valid Excel workbooks yet:
+The current working Dataset -> Prompt path uses:
+
+```text
+datasets/examples/HCDS_Master_MVP.csv
+        ↓
+generators/prompt_generator.py
+        ↓
+outputs/prompt_mvp.txt
+```
+
+The implementation-facing schema is copied from `schemas/HCDS_Master_Schema.md`.
+
+The following `.xlsx` files remain 0-byte placeholders and are not valid Excel workbooks yet:
 
 - HCDS_Master.xlsx
-- Character_Profile.xlsx
 - Attribute_Library.xlsx
-- Rule_Engine.xlsx
-- Emotion_Mapping.xlsx
 - Prompt_Template.xlsx
 
-A minimal CSV example exists at `examples/HCDS_Master_MVP.csv` and is used by the Prompt Generator MVP.
+Non-implemented workbook placeholders outside the active MVP path were removed during Stabilization v1.2.

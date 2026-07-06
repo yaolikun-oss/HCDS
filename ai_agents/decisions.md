@@ -448,7 +448,7 @@ LoRA
 
 **Title:** Character Profile is the Aggregate Root before Generation.
 
-**Status:** Accepted
+**Status:** Superseded
 
 **Date:** 2026-07-04
 
@@ -497,7 +497,9 @@ Character Profile
 
 **Reason:** Character Profile answers the missing data-model question: what constitutes one complete character for generation. Dataset Master is a collection of Character Profiles, while Prompt Generation compiles a Character Profile into prompt output.
 
-**Impact:** `Prompt_Generation_Spec.md` is deferred until `Character_Profile_Spec.md` is defined. `Decision-016` remains valid as the Generation Pipeline direction, but its immediate next-document priority is superseded by this decision.
+**Impact:** Superseded by HCDS Stabilization v1.2. The current MVP flattens the unimplemented Character Profile layer and uses the implemented Dataset -> Prompt generator path directly. `Character_Profile_Spec.md` remains deferred unless future implementation work explicitly requires it.
+
+**Superseded Note:** This decision is retained for historical context only and is not active for the current MVP implementation.
 
 **Related Files:** `docs/02_schema/Character_Profile_Spec.md`, `docs/02_schema/Dataset_Master_Spec.md`, `docs/02_schema/Character_Identity_Spec.md`, `docs/02_schema/Appearance_Spec.md`, `docs/02_schema/Costume_Spec.md`, `docs/02_schema/Pose_Action_Spec.md`, `docs/02_schema/Expression_Spec.md`, `docs/03_generation/Prompt_Generation_Spec.md`
 

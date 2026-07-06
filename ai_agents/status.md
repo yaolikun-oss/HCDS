@@ -1,10 +1,10 @@
 # HCDS Agent Status
 
-Last Updated: 2026-07-04
+Last Updated: 2026-07-06
 
 ## Current Phase
 
-Implementation MVP: HCDS Generator
+Stabilization v1.2: Schema and Generator Alignment
 
 ## Completed
 
@@ -25,26 +25,23 @@ Implementation MVP: HCDS Generator
 | `docs/02_schema/Expression_Spec.md` | Frozen |
 | Data Foundation MVP | Complete |
 | HCDS Prompt Generator MVP | Complete |
+| HCDS Stabilization v1.1 | Complete |
+| HCDS Stabilization v1.2 | Complete |
 
 ## In Progress
 
 | Work Item | Owner | Status |
 | --- | --- | --- |
-| `generators/prompt_generator.py` | Codex | MVP Complete |
+| MVP stabilization review | Codex | Ready for Review |
 
 ## Next
 
 | Order | Work Item | Type |
 | --- | --- | --- |
 | 1 | Replace placeholder `datasets/HCDS_Master.xlsx` with real workbook data | Dataset Implementation |
-| 2 | Add `docs/03_generation/Prompt_Generation_Spec.md` | Generation Specification |
-| 3 | Add `docs/03_generation/Image_Filename_Spec.md` | Generation Specification |
-| 4 | Add `docs/03_generation/Caption_Generation_Spec.md` | Generation Specification |
-| 5 | Add `docs/03_generation/OneTrainer_Dataset_Spec.md` | Generation Specification |
-| 6 | Defer `docs/02_schema/Camera_Spec.md` until required by generation | Deferred Schema Specification |
-| 7 | Defer `docs/02_schema/Scene_Context_Spec.md` until required by generation | Deferred Schema Specification |
-| 8 | Defer `docs/02_schema/Metadata_Spec.md` until required by generation | Deferred Schema Specification |
-| 9 | Add implementation specifications, including validation and compiler specs | Implementation Specification |
+| 2 | Run Prompt Generator MVP against the real workbook | Generator Validation |
+| 3 | Add `docs/03_generation/Prompt_Generation_Spec.md` only after MVP behavior is accepted | Generation Specification |
+| 4 | Add image filename, caption, and OneTrainer specs after prompt generation is stable | Generation Specification |
 
 ## Blocked
 
@@ -61,7 +58,8 @@ None.
 | HCDS v2.0 Dataset Master Frozen | Complete |
 | HCDS v2.0 Business Specifications MVP | Complete |
 | HCDS v2.0 Data Foundation MVP | Complete |
-| HCDS v2.0 Generator MVP | In Progress |
+| HCDS v2.0 Generator MVP | Complete |
+| HCDS v2.0 Stabilized MVP | Ready for Review |
 | HCDS v2.0 Release Candidate | Not Started |
 | HCDS v2.0 Release | Not Started |
 

@@ -10,12 +10,47 @@ from __future__ import annotations
 
 import argparse
 import csv
+import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
 
 EMPTY_VALUES = {"", "none", "n/a", "na", "null", "unknown", "未知", "无"}
+
+PROHIBITED_OBSERVABLE_TERMS_EN = frozenset({
+    "brave",
+    "calm",
+    "courage",
+    "determined",
+    "elegant",
+    "heroic",
+    "intelligence",
+    "kindness",
+    "loyal",
+    "majestic",
+    "majesty",
+    "natural",
+    "noble",
+    "powerful",
+    "wise",
+})
+
+PROHIBITED_OBSERVABLE_TERMS_ZH = frozenset({
+    "威严",
+    "坚定",
+    "悲伤",
+    "愤怒",
+    "勇敢",
+    "霸气",
+    "高贵",
+    "英雄",
+    "自然",
+    "优雅",
+    "智慧",
+    "忠诚",
+    "善良",
+})
 
 FIELD_ALIASES = {
     "record_id": ("RecordId", "CharacterId", "ID", "Id"),
@@ -95,6 +130,30 @@ def canonical(row: dict[str, object], alias: str) -> str:
     return first_value(row, *FIELD_ALIASES[alias])
 
 
+
+def find_observable_violations(row: dict[str, object]) -> list[str]:
+    violations: list[str] = []
+    for field_name, raw_value in row.items():
+        value = clean(raw_value)
+        if not value:
+            continue
+        lowered = value.lower()
+        for term in sorted(PROHIBITED_OBSERVABLE_TERMS_EN):
+            if re.search(rf"(?<![A-Za-z]){re.escape(term)}(?![A-Za-z])", lowered):
+                violations.append(f"{field_name}={value!r} uses interpretive term {term!r}")
+        for term in sorted(PROHIBITED_OBSERVABLE_TERMS_ZH):
+            if term in value:
+                violations.append(f"{field_name}={value!r} uses interpretive term {term!r}")
+    return violations
+
+
+def validate_observable(row: dict[str, object]) -> None:
+    violations = find_observable_violations(row)
+    if violations:
+        detail = "; ".join(violations)
+        raise ValueError(f"Observable Principle violation: {detail}")
+
+
 def join_values(values: Iterable[str]) -> str:
     seen: set[str] = set()
     result: list[str] = []
@@ -116,6 +175,8 @@ def prefixed(label: str, values: Iterable[str]) -> str:
 
 
 def compile_prompt(row: dict[str, object]) -> PromptRecord:
+    validate_observable(row)
+
     record_id = canonical(row, "record_id") or canonical(row, "name") or "record"
 
     identity = join_values([
