@@ -503,3 +503,34 @@ Character Profile
 
 **Related Files:** `docs/02_schema/Character_Profile_Spec.md`, `docs/02_schema/Dataset_Master_Spec.md`, `docs/02_schema/Character_Identity_Spec.md`, `docs/02_schema/Appearance_Spec.md`, `docs/02_schema/Costume_Spec.md`, `docs/02_schema/Pose_Action_Spec.md`, `docs/02_schema/Expression_Spec.md`, `docs/03_generation/Prompt_Generation_Spec.md`
 
+---
+
+### Decision-018
+
+**Title:** HCDS Language Strategy v1.0.
+
+**Status:** Accepted
+
+**Date:** 2026-07-07
+
+**Phase:** Phase 3 - Generation Pipeline
+
+**Owner:** HCDS Architecture Team
+
+**Context:** HCDS datasets are authored by humans in Chinese but consumed by AI systems that often produce more stable results with English semantic descriptions. RFC0002 (`rfcs/RFC0002_HCDS_Language_Strategy.md`) proposed a layered language architecture to separate human authoring language from model-facing generation language, and has completed review.
+
+**Decision:** HCDS SHALL adopt the Dual Language Architecture defined in RFC0002.
+
+* The Human Layer uses Chinese as the canonical semantic source.
+* The Structured Dataset Layer remains language independent.
+* The Generation Layer supports both `Prompt_CN` and `Prompt_EN`.
+* The Training Layer prefers English captions (`Caption_EN`).
+
+**Rule (Language Ownership):** The Chinese semantic layer is the canonical human source of historical meaning. English generation output (`Prompt_EN`, `Caption_EN`) is a model adaptation layer only. Generated English text SHALL NOT override or redefine historical meaning established by the Chinese semantic layer; any divergence is a translation defect, not an alternate authoritative source. Caption generation belongs to the training pipeline (Dataset Master and downstream artifacts), not to Character Profile.
+
+**Reason:** Separating canonical human meaning from model-facing adaptation prevents English generation or translation artifacts from silently drifting away from, or overwriting, the historical record that Chinese-authored fields represent.
+
+**Impact:** This decision is advisory only until schema, generator, and template changes are separately reviewed and accepted, per RFC0002 Section 5 (Compatibility). No schema, generator, or open pull request is modified by this decision. Future work implementing `Prompt_CN`, `Prompt_EN`, or `Caption_EN` SHALL cite this decision and RFC0002.
+
+**Related Files:** `rfcs/RFC0002_HCDS_Language_Strategy.md`, `templates/Character_Profile_Template_v1.0.xlsx`, `generators/prompt_generator.py`, `scripts/caption_generator.py`
+
