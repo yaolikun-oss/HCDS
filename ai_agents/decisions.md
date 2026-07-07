@@ -534,3 +534,35 @@ Character Profile
 
 **Related Files:** `rfcs/RFC0002_HCDS_Language_Strategy.md`, `templates/Character_Profile_Template_v1.0.xlsx`, `generators/prompt_generator.py`, `scripts/caption_generator.py`
 
+---
+
+### Decision-019
+
+**Title:** HCDS Dataset Sample Architecture v1.0.
+
+**Status:** Accepted
+
+**Date:** 2026-07-07
+
+**Phase:** Phase 2 - Schema Engineering
+
+**Owner:** HCDS Architecture Team
+
+**Context:** The Phase 2 Alpha readiness review of `docs/02_schema/Dataset_Master_Spec.md` found that Section 5 ("Each Character Record SHALL represent exactly one historical character") and Section 6 (each Character Record contains exactly one Pose, Costume, Camera, and Scene) together leave no defined way to represent multiple samples of the same character. RFC0003 (`rfcs/RFC0003_HCDS_Dataset_Sample_Architecture.md`) proposed separating character identity from sample identity to resolve this, and has completed review.
+
+**Decision:** HCDS SHALL adopt the Character/Sample separation defined in RFC0003.
+
+* `Character_ID` identifies a historical person.
+* `Sample_ID` identifies a generated dataset sample.
+* One Character SHALL support multiple Samples.
+* Dataset_Master owns Sample lifecycle.
+* Character_Profile remains identity-only and does not own sample lifecycle.
+
+**Rule (Sample Lifecycle):** Sample lifecycle state is owned by Dataset_Master and is independent of Character_Profile. Changing a Sample's lifecycle state SHALL NOT alter the Character Profile it references, and changing a Character Profile SHALL NOT implicitly alter the lifecycle state of any Sample referencing it.
+
+**Reason:** Without a distinct Sample identity, a production dataset cannot represent multiple pose or costume variations of one character without violating Dataset_Master's own uniqueness and one-entity-graph-per-record constraints. Separating identity (who) from sample (which generated instance) resolves this without touching Camera, Scene, Caption, or generator implementation, which remain explicitly out of scope.
+
+**Impact:** This decision is advisory only until `docs/02_schema/Dataset_Master_Spec.md` is formally amended with a version update, per its own Section 27 (Freeze Decision). No schema, generator, template, or character file is modified by this decision. Future work implementing Sample_ID or a Dataset_Master physical format SHALL cite this decision and RFC0003.
+
+**Related Files:** `rfcs/RFC0003_HCDS_Dataset_Sample_Architecture.md`, `docs/02_schema/Dataset_Master_Spec.md`, `templates/Character_Profile_Template_v1.0.xlsx`, `characters/LIAO_XIAO_CHUO/Character_Profile.xlsx`
+
